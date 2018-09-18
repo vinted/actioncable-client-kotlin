@@ -11,10 +11,6 @@ buildscript {
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'maven-publish'
-
-def artifactId = 'actioncable-client-android'
-def groupId = 'com.vinted'
 
 android {
     compileSdkVersion Versions.COMPILE_SDK_VERSION
@@ -44,16 +40,4 @@ dependencies {
     implementation Libs.KOTLIN_STDLIB
     implementation Libs.OKHTTP
     implementation Libs.GSON
-}
-
-publishing {
-    publications {
-        library(MavenPublication) {
-            setGroupId(groupId)
-            setArtifactId(artifactId)
-            version Versions.VERSION_NAME
-
-            artifact(bundleRelease)
-        }
-    }
 }
