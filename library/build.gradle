@@ -1,0 +1,59 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+    }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'maven-publish'
+
+def artifactId = 'actioncable-client-android'
+def groupId = 'com.vinted'
+
+android {
+    compileSdkVersion Versions.COMPILE_SDK_VERSION
+
+    defaultConfig {
+        minSdkVersion Versions.MIN_SDK_VERSION
+        targetSdkVersion Versions.TARGET_SDK_VERSION
+        versionCode Versions.VERSION_CODE
+        versionName Versions.VERSION_NAME
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+}
+
+dependencies {
+    implementation Libs.KOTLIN_STDLIB
+    implementation Libs.OKHTTP
+    implementation Libs.GSON
+}
+
+publishing {
+    publications {
+        library(MavenPublication) {
+            setGroupId(groupId)
+            setArtifactId(artifactId)
+            version Versions.VERSION_NAME
+
+            artifact(bundleRelease)
+        }
+    }
+}
