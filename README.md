@@ -1,4 +1,4 @@
-# actioncable-client-android
+# actioncable-client-kotlin
 
 Download
 --------

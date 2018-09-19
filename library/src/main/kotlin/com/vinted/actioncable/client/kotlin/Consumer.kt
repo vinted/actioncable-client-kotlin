@@ -1,6 +1,6 @@
-package com.vinted.actioncable.client.android
+package com.vinted.actioncable.client.kotlin
 
-import com.vinted.actioncable.client.android.Message.Type.*
+import com.vinted.actioncable.client.kotlin.Message.Type.*
 import java.net.URI
 
 /**

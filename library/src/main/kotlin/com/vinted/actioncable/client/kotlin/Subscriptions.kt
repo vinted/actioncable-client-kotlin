@@ -1,4 +1,4 @@
-package com.vinted.actioncable.client.android
+package com.vinted.actioncable.client.kotlin
 
 /**
  * Collection class for creating (and internally managing) channel subscriptions.

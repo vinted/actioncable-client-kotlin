@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.vinted.actioncable.client.android.sample">
+    package="com.vinted.actioncable.client.kotlin.sample">
 
     <application
         android:allowBackup="true"
@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name="com.vinted.actioncable.client.android.sample.MainActivity">
+        <activity android:name="com.vinted.actioncable.client.kotlin.sample.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

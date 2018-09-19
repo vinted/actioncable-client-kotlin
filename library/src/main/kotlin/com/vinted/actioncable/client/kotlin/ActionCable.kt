@@ -1,4 +1,4 @@
-package com.vinted.actioncable.client.android
+package com.vinted.actioncable.client.kotlin
 
 import java.net.URI
 

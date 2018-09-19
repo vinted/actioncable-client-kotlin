@@ -1,4 +1,4 @@
-package com.vinted.actioncable.client.android
+package com.vinted.actioncable.client.kotlin
 
 import com.google.gson.GsonBuilder
 import com.google.gson.annotations.SerializedName

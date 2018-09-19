@@ -1,4 +1,4 @@
-package com.vinted.actioncable.client.android.sample
+package com.vinted.actioncable.client.kotlin.sample
 
 import android.support.v7.app.AppCompatActivity
 
