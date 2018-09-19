@@ -4,6 +4,6 @@ Download
 --------
 ```
 dependencies {
-    implementation 'com.vinted:actioncable-client-android:0.1.1'
+    implementation 'com.vinted:actioncable-client-kotlin:0.2.0'
 }
 ```
