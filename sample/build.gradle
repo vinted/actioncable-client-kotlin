@@ -28,5 +28,5 @@ dependencies {
     implementation project(':library')
 
     implementation Libs.KOTLIN_STDLIB
-    implementation Libs.APP_COMPAT_V7
+    implementation Libs.APP_COMPAT
 }
