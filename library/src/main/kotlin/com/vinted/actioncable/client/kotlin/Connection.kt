@@ -1,8 +1,5 @@
 package com.vinted.actioncable.client.kotlin
 
-import android.os.Handler
-import android.os.HandlerThread
-import android.os.Message
 import okhttp3.*
 import java.io.IOException
 import java.net.CookieHandler
@@ -52,8 +49,8 @@ class Connection constructor(
         TERMINATING
     }
 
-    var onOpen: () -> Unit = {}
-    var onMessage: (jsonString: String) -> Unit = {}
+    var onOpen: suspend () -> Unit = {}
+    var onMessage: suspend (jsonString: String) -> Unit = {}
     var onClose: () -> Unit = {}
     var onFailure: (e: Exception) -> Unit = {}
 
@@ -63,34 +60,13 @@ class Connection constructor(
 
     private var isReopening = false
 
-    private val actionsHandlerThread by lazy {
-        HandlerThread(ID_ACTIONS_HANDLER_THREAD)
-    }
-    private val actionsHandler by lazy {
-        object : Handler(actionsHandlerThread.looper) {
-            override fun handleMessage(msg: Message) {
-                when (msg.what) {
-                    ACTION_OPEN -> performOpen()
-                    ACTION_SEND -> doSend(msg.obj)
-                    ACTION_INVOKE_ON_OPEN_CALLBACK -> onOpen.invoke()
-                    ACTION_INVOKE_ON_MESSAGE_CALLBACK -> onMessage.invoke(msg.obj as String)
-                    ACTION_HANDLE_FAILURE -> handleFailure(msg.obj as Throwable?)
-                    ACTION_CLOSE -> performClose()
-                    ACTION_HANDLE_CLOSURE -> handleClosure()
-                }
-            }
-        }
-    }
-
-    init {
-        actionsHandlerThread.start()
-    }
+    private val eventsHandler = EventsHandler()
 
     fun open() {
-        actionsHandler.sendEmptyMessage(ACTION_OPEN)
+        eventsHandler.handle(::performOpen)
     }
 
-    private fun performOpen() {
+    private suspend fun performOpen() {
         if (isOpen()) {
             fireOnFailure(IllegalStateException("Must close existing connection before opening"))
         } else {
@@ -99,7 +75,7 @@ class Connection constructor(
     }
 
     private fun close() {
-        actionsHandler.sendEmptyMessage(ACTION_CLOSE)
+        eventsHandler.handle(::performClose)
     }
 
     fun terminate() {
@@ -107,7 +83,7 @@ class Connection constructor(
         close()
     }
 
-    private fun performClose() {
+    private suspend fun performClose() {
         webSocket?.let { webSocket ->
             if (!isState(State.CLOSING, State.CLOSED)) {
                 try {
@@ -135,10 +111,7 @@ class Connection constructor(
     fun send(data: Any): Boolean {
         if (!isOpen()) return false
 
-        actionsHandler.sendMessage(Message.obtain().apply {
-            what = ACTION_SEND
-            obj = data
-        })
+        eventsHandler.handle { doSend(data = data) }
 
         return true
     }
@@ -173,7 +146,7 @@ class Connection constructor(
         httpClient.dispatcher().executorService().shutdown()
     }
 
-    private fun doSend(data: Any) {
+    private suspend fun doSend(data: Any) {
         webSocket?.let { webSocket ->
             try {
                 webSocket.send((data as Command).toJsonString())
@@ -185,48 +158,44 @@ class Connection constructor(
 
     private fun fireOnFailure(error: Exception) {
         onFailure.invoke(error)
-        if (isState(State.TERMINATING)) stopHandler()
+        if (isState(State.TERMINATING)) stopEventsHandler()
     }
 
     private val webSocketListener = object : WebSocketListener() {
         override fun onOpen(openedWebSocket: WebSocket?, response: Response?) {
             state = State.OPEN
             webSocket = openedWebSocket
-            actionsHandler.sendEmptyMessage(ACTION_INVOKE_ON_OPEN_CALLBACK)
+            eventsHandler.handle { onOpen }
         }
 
         override fun onFailure(webSocket: WebSocket?, throwable: Throwable?, response: Response?) {
-            actionsHandler.sendMessage(Message.obtain().apply {
-                what = ACTION_HANDLE_FAILURE
-                obj = throwable
-            })
+            eventsHandler.handle { handleFailure(throwable) }
         }
 
         override fun onMessage(webSocket: WebSocket?, text: String?) {
             text?.also {
-                actionsHandler.sendMessage(Message.obtain().apply {
-                    what = ACTION_INVOKE_ON_MESSAGE_CALLBACK
-                    obj = it
-                })
+                eventsHandler.handle {
+                    onMessage(it)
+                }
             }
         }
 
         override fun onClosed(webSocket: WebSocket?, code: Int, reason: String?) {
             println("WebSocket#onClose")
             state = State.CLOSED
-            actionsHandler.sendEmptyMessage(ACTION_HANDLE_CLOSURE)
+            eventsHandler.handle(::handleClosure)
         }
     }
 
-    private fun handleFailure(throwable: Throwable?) {
+    private suspend fun handleFailure(throwable: Throwable?) {
         state = State.CLOSED
         throwable ?: RuntimeException("Unexpected error")
         fireOnFailure(Exception(throwable))
     }
 
-    private fun handleClosure() {
+    private suspend fun handleClosure() {
         if (isState(State.TERMINATING)) {
-            stopHandler()
+            stopEventsHandler()
             isReopening = false
         }
         state = State.CLOSED
@@ -239,21 +208,8 @@ class Connection constructor(
         }
     }
 
-    private fun stopHandler() {
-        actionsHandler.removeCallbacksAndMessages(null)
-        actionsHandlerThread.quit()
-    }
-
-    companion object {
-        private const val ID_ACTIONS_HANDLER_THREAD = "actions_handler_thread"
-
-        private const val ACTION_OPEN = 1
-        private const val ACTION_SEND = 2
-        private const val ACTION_INVOKE_ON_OPEN_CALLBACK = 3
-        private const val ACTION_INVOKE_ON_MESSAGE_CALLBACK = 4
-        private const val ACTION_HANDLE_FAILURE = 5
-        private const val ACTION_CLOSE = 6
-        private const val ACTION_HANDLE_CLOSURE = 7
+    private fun stopEventsHandler() {
+        eventsHandler.stop()
     }
 }
 

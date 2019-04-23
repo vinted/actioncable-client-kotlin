@@ -1,33 +1,11 @@
 package com.vinted.actioncable.client.kotlin
 
-import android.os.Handler
-import android.os.HandlerThread
-import android.os.Message
-
 class ConnectionMonitor(
         private val connection: Connection,
         private val options: Connection.Options
 ) {
 
-    private val pollHandlerThread by lazy {
-        HandlerThread(ID_POLL_HANDLER_THREAD)
-    }
-    private val pollHandler by lazy {
-        object : Handler(pollHandlerThread.looper) {
-            override fun handleMessage(msg: Message) {
-                if (msg.what == ACTION_POLL) {
-                    if (stoppedAt == 0L) {
-                        reconnectIfStale()
-                    }
-                    poll()
-                }
-            }
-        }
-    }
-
-    init {
-        pollHandlerThread.start()
-    }
+    private val eventsHandler = EventsHandler()
 
     private var pingedAt = 0L
 
@@ -78,12 +56,18 @@ class ConnectionMonitor(
 
     fun terminate() {
         stoppedAt = now()
-        pollHandler.removeCallbacksAndMessages(null)
-        pollHandlerThread.quit()
+        eventsHandler.stop()
     }
 
     private fun poll() {
-        pollHandler.sendEmptyMessageDelayed(ACTION_POLL, interval)
+        eventsHandler.handleWithDelay(operation = ::reconnectIfNeeded, duration = interval)
+    }
+
+    private suspend fun reconnectIfNeeded() {
+        if (stoppedAt == 0L) {
+            reconnectIfStale()
+        }
+        poll()
     }
 
     private fun reset() {
@@ -104,10 +88,6 @@ class ConnectionMonitor(
     private fun secondsSince(time: Long): Long = (now() - time) / 1000
 
     companion object {
-        private const val ID_POLL_HANDLER_THREAD = "poll_handler_thread"
-
-        private const val ACTION_POLL = 1
-
         private const val STALE_THRESHOLD = 6
     }
 }
