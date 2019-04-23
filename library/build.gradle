@@ -38,6 +38,7 @@ android {
 
 dependencies {
     implementation Libs.KOTLIN_STDLIB
+    implementation Libs.KOTLIN_COROUTINES
     implementation Libs.OKHTTP
     implementation Libs.GSON
 }
