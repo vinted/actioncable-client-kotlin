@@ -7,7 +7,7 @@ object Versions {
     const val MOCKITO = "2.13.0"
     const val MOCKITO_KOTILN = "1.5.0"
     const val GSON = "2.8.4"
-    const val OKHTTP = "3.11.0"
+    const val OKHTTP = "3.12.1"
 
     const val COMPILE_SDK_VERSION = 28
     const val MIN_SDK_VERSION = 19
