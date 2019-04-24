@@ -162,34 +162,31 @@ class Connection constructor(
     }
 
     private val webSocketListener = object : WebSocketListener() {
-        override fun onOpen(openedWebSocket: WebSocket?, response: Response?) {
+        override fun onOpen(openedWebSocket: WebSocket, response: Response) {
             state = State.OPEN
             webSocket = openedWebSocket
             eventsHandler.handle { onOpen }
         }
 
-        override fun onFailure(webSocket: WebSocket?, throwable: Throwable?, response: Response?) {
+        override fun onFailure(webSocket: WebSocket, throwable: Throwable, response: Response?) {
             eventsHandler.handle { handleFailure(throwable) }
         }
 
-        override fun onMessage(webSocket: WebSocket?, text: String?) {
-            text?.also {
-                eventsHandler.handle {
-                    onMessage(it)
-                }
+        override fun onMessage(webSocket: WebSocket, text: String) {
+            eventsHandler.handle {
+                onMessage(text)
             }
         }
 
-        override fun onClosed(webSocket: WebSocket?, code: Int, reason: String?) {
+        override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
             println("WebSocket#onClose")
             state = State.CLOSED
             eventsHandler.handle(::handleClosure)
         }
     }
 
-    private suspend fun handleFailure(throwable: Throwable?) {
+    private suspend fun handleFailure(throwable: Throwable) {
         state = State.CLOSED
-        throwable ?: RuntimeException("Unexpected error")
         fireOnFailure(Exception(throwable))
     }
 
