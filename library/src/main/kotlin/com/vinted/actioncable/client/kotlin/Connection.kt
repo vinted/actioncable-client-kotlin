@@ -165,7 +165,7 @@ class Connection constructor(
         override fun onOpen(openedWebSocket: WebSocket, response: Response) {
             state = State.OPEN
             webSocket = openedWebSocket
-            eventsHandler.handle { onOpen }
+            eventsHandler.handle { onOpen.invoke() }
         }
 
         override fun onFailure(webSocket: WebSocket, throwable: Throwable, response: Response?) {
