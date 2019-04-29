@@ -179,8 +179,6 @@ class Connection constructor(
         }
 
         override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
-            println("WebSocket#onClose")
-            state = State.CLOSED
             eventsHandler.handle(::handleClosure)
         }
     }
