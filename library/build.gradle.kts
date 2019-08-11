@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("kotlin")
+    maven
 }
 
 tasks.withType<KotlinCompile> {
