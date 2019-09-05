@@ -52,7 +52,7 @@ class Connection constructor(
     var onOpen: suspend () -> Unit = {}
     var onMessage: suspend (jsonString: String) -> Unit = {}
     var onClose: () -> Unit = {}
-    var onFailure: (e: Exception) -> Unit = {}
+    var onFailure: (e: Throwable) -> Unit = {}
 
     private var state = State.CONNECTING
 
@@ -156,7 +156,7 @@ class Connection constructor(
         }
     }
 
-    private fun fireOnFailure(error: Exception) {
+    private fun fireOnFailure(error: Throwable) {
         onFailure.invoke(error)
         if (isState(State.TERMINATING)) stopEventsHandler()
     }
@@ -185,7 +185,7 @@ class Connection constructor(
 
     private suspend fun handleFailure(throwable: Throwable) {
         state = State.CLOSED
-        fireOnFailure(Exception(throwable))
+        fireOnFailure(throwable)
     }
 
     private suspend fun handleClosure() {

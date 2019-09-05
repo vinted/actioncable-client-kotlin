@@ -4,7 +4,7 @@ typealias ConnectedHandler = () -> Unit
 typealias RejectedHandler = () -> Unit
 typealias ReceivedHandler = (data: Any?) -> Unit
 typealias DisconnectedHandler = () -> Unit
-typealias FailedHandler = (e: Exception) -> Unit
+typealias FailedHandler = (e: Throwable) -> Unit
 
 /**
  * Subscription provides a number of callbacks and a method for calling remote procedure calls
@@ -67,7 +67,7 @@ class Subscription constructor(private val consumer: Consumer, channel: Channel)
         onDisconnected?.invoke()
     }
 
-    fun notifyFailed(error: Exception) {
+    fun notifyFailed(error: Throwable) {
         onFailed?.invoke(error)
     }
 }
