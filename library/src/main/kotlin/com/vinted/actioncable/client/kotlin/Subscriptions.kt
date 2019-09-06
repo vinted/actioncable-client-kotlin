@@ -54,7 +54,7 @@ class Subscriptions constructor(private val consumer: Consumer) {
         subscriptions.filter { it.identifier == identifier }.forEach { it.notifyReceived(data) }
     }
 
-    fun notifyFailed(error: Exception) {
+    fun notifyFailed(error: Throwable) {
         subscriptions.forEach { it.notifyFailed(error) }
     }
 
