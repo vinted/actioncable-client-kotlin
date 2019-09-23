@@ -88,6 +88,6 @@ class ConnectionMonitor(
     private fun secondsSince(time: Long): Long = (now() - time) / 1000
 
     companion object {
-        private const val STALE_THRESHOLD = 6
+        const val STALE_THRESHOLD = 6
     }
 }
