@@ -18,7 +18,7 @@ import java.net.URI
  */
 class Consumer(
         uri: URI,
-        options: Options = Options()
+        private val options: Options = Options()
 ) {
     /**
      * Consumer options.
@@ -72,7 +72,9 @@ class Consumer(
      */
     fun connect() {
         connection.open()
-        connectionMonitor.start()
+        if (options.connection.reconnection) {
+            connectionMonitor.start()
+        }
     }
 
     /**
