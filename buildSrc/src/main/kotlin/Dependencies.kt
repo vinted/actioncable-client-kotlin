@@ -1,7 +1,7 @@
 object Versions {
     const val APP_COMPAT = "1.0.2"
-    const val KOTLIN = "1.3.31"
     const val COROUTINES = "1.2.1"
+    const val KOTLIN = "1.3.50"
     const val ANDROID_GRADLE_PLUGIN = "3.4.0"
     const val JUNIT = "5.4.2"
     const val ROBOLECTRIC = "3.7.1"
