@@ -71,7 +71,7 @@ class ConnectionMonitor(
     private fun now(): Long = System.currentTimeMillis()
 
     private fun reconnectIfStale() {
-        if (options.reconnection && connectionIsStale && reconnectAttempts < options.reconnectionMaxAttempts) {
+        if (connectionIsStale && reconnectAttempts < options.reconnectionMaxAttempts) {
             reconnectAttempts++
             if (!disconnectedRecently) {
                 connection.reopen()
@@ -82,6 +82,6 @@ class ConnectionMonitor(
     private fun secondsSince(time: Long): Long = (now() - time) / 1000
 
     companion object {
-        private const val STALE_THRESHOLD = 6
+        const val STALE_THRESHOLD = 6
     }
 }
