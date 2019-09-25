@@ -45,4 +45,6 @@ dependencies {
     implementation(Libs.GSON)
     testImplementation(Libs.JUNIT)
     testImplementation(Libs.MOCKWEBSERVER)
+    testImplementation(Libs.MOCKITO_KOTLIN)
+    testImplementation(Libs.MOCKITO_INLINE)
 }
