@@ -21,8 +21,13 @@ class Subscriptions constructor(private val consumer: Consumer) {
      * @param channel Channel to connect
      * @return Subscription instance
      */
-    fun create(channel: Channel): Subscription = Subscription(consumer, channel).also {
-        subscriptions.add(it)
+    fun create(channel: Channel): Subscription {
+        val subscription = Subscription(consumer, channel)
+
+        subscriptions.add(subscription)
+        sendSubscribeCommand(subscription)
+
+        return subscription
     }
 
     /**
