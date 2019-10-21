@@ -22,6 +22,8 @@ class Subscriptions constructor(private val consumer: Consumer) {
      * @return Subscription instance
      */
     fun create(channel: Channel): Subscription {
+        require(channel.identifier !in subscriptions.map { it.identifier }) { "Such subscription already exists" }
+
         val subscription = Subscription(consumer, channel)
 
         subscriptions.add(subscription)
