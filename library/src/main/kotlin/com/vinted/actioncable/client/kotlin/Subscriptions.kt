@@ -40,7 +40,20 @@ class Subscriptions constructor(private val consumer: Consumer) {
     fun remove(subscription: Subscription) {
         if (subscriptions.remove(subscription)) {
             consumer.send(Command.unsubscribe(subscription.identifier))
+            subscription.onDisconnected?.invoke()
         }
+    }
+
+    /**
+     * Remove all subscriptions.
+     */
+    fun removeAll() {
+        subscriptions.forEach { subscription ->
+            consumer.send(Command.unsubscribe(subscription.identifier))
+            subscription.onDisconnected?.invoke()
+        }
+
+        subscriptions.clear()
     }
 
     fun contains(subscription: Subscription) = subscriptions.contains(subscription)

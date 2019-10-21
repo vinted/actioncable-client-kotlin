@@ -5,12 +5,15 @@ import com.vinted.actioncable.client.kotlin.utils.TIMEOUT
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import okhttp3.mockwebserver.MockWebServer
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.net.URI
 
 class SubscriptionsTest {
+
+    private val channel1 = Channel(channel = "foo", params = mapOf())
+    private val channel2 = Channel(channel = "bar", params = mapOf())
 
     @Test
     fun subscriptionCreationAndRemoval() = runBlocking {
@@ -72,11 +75,50 @@ class SubscriptionsTest {
     fun cannotDuplicateExistingSubscription() {
         assertThrows<IllegalArgumentException>("Such subscription already exists") {
             val consumer = Consumer(URI("/"))
-            val channel = Channel(channel = "foo", params = mapOf())
 
-            consumer.subscriptions.create(channel)
-            consumer.subscriptions.create(channel)
+            consumer.subscriptions.create(channel1)
+            consumer.subscriptions.create(channel1)
         }
+    }
+
+    @Test
+    fun removeAllSubscriptions() = runBlocking {
+        withTimeout(TIMEOUT) {
+            val events = Channel<String>()
+            val consumer = Consumer(URI("/"))
+
+            val subscription1 = consumer.subscriptions.create(channel1)
+            val subscription2 = consumer.subscriptions.create(channel2)
+            subscription1.onDisconnected = {
+                launch {
+                    events.send(SUCCESSFUL_DISCONNECTION_MESSAGE)
+                }
+            }
+            subscription2.onDisconnected = {
+                launch {
+                    events.send(SUCCESSFUL_DISCONNECTION_MESSAGE)
+                }
+            }
+            consumer.subscriptions.removeAll()
+
+            assertFalse(consumer.subscriptions.contains(subscription1))
+            assertFalse(consumer.subscriptions.contains(subscription2))
+            assertEquals(SUCCESSFUL_DISCONNECTION_MESSAGE, events.receive())
+            assertEquals(SUCCESSFUL_DISCONNECTION_MESSAGE, events.receive())
+            events.close()
+            Unit
+        }
+    }
+
+    @Test
+    fun containsAddedSubscriptions() {
+        val consumer = Consumer(URI("/"))
+
+        val subscription1 = consumer.subscriptions.create(channel1)
+        val subscription2 = consumer.subscriptions.create(channel2)
+
+        assertTrue(consumer.subscriptions.contains(subscription1))
+        assertTrue(consumer.subscriptions.contains(subscription2))
     }
 
     private fun CoroutineScope.initializeMockServer(events: Channel<String>): MockWebServer {
@@ -89,5 +131,6 @@ class SubscriptionsTest {
     companion object {
         private const val SERVER_RESPONSE_DELAY = 1000L
         private const val SUCCESSFUL_CONNECTION_MESSAGE = "onConnected"
+        private const val SUCCESSFUL_DISCONNECTION_MESSAGE = "disconnected"
     }
 }
