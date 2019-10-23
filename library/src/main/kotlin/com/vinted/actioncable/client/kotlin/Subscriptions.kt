@@ -39,7 +39,7 @@ class Subscriptions constructor(private val consumer: Consumer) {
      */
     fun remove(subscription: Subscription) {
         if (subscriptions.remove(subscription)) {
-            consumer.send(Command.unsubscribe(subscription.identifier))
+            sendUnsubscribeCommand(subscription)
             subscription.onDisconnected?.invoke()
         }
     }
@@ -49,7 +49,7 @@ class Subscriptions constructor(private val consumer: Consumer) {
      */
     fun removeAll() {
         subscriptions.forEach { subscription ->
-            consumer.send(Command.unsubscribe(subscription.identifier))
+            sendUnsubscribeCommand(subscription)
             subscription.onDisconnected?.invoke()
         }
 
@@ -86,5 +86,9 @@ class Subscriptions constructor(private val consumer: Consumer) {
 
     private fun sendSubscribeCommand(subscription: Subscription) {
         consumer.send(Command.subscribe(subscription.identifier))
+    }
+
+    private fun sendUnsubscribeCommand(subscription: Subscription) {
+        consumer.send(Command.unsubscribe(subscription.identifier))
     }
 }

@@ -82,31 +82,32 @@ class SubscriptionsTest {
     }
 
     @Test
-    fun removeAllSubscriptions() = runBlocking {
-        withTimeout(TIMEOUT) {
-            val events = Channel<String>()
-            val consumer = Consumer(URI("/"))
+    fun removeAllSubscriptions() {
+        runBlocking {
+            withTimeout(TIMEOUT) {
+                val events = Channel<String>()
+                val consumer = Consumer(URI("/"))
 
-            val subscription1 = consumer.subscriptions.create(channel1)
-            val subscription2 = consumer.subscriptions.create(channel2)
-            subscription1.onDisconnected = {
-                launch {
-                    events.send(SUCCESSFUL_DISCONNECTION_MESSAGE)
+                val subscription1 = consumer.subscriptions.create(channel1)
+                val subscription2 = consumer.subscriptions.create(channel2)
+                subscription1.onDisconnected = {
+                    launch {
+                        events.send(SUCCESSFUL_DISCONNECTION_MESSAGE)
+                    }
                 }
-            }
-            subscription2.onDisconnected = {
-                launch {
-                    events.send(SUCCESSFUL_DISCONNECTION_MESSAGE)
+                subscription2.onDisconnected = {
+                    launch {
+                        events.send(SUCCESSFUL_DISCONNECTION_MESSAGE)
+                    }
                 }
-            }
-            consumer.subscriptions.removeAll()
+                consumer.subscriptions.removeAll()
 
-            assertFalse(consumer.subscriptions.contains(subscription1))
-            assertFalse(consumer.subscriptions.contains(subscription2))
-            assertEquals(SUCCESSFUL_DISCONNECTION_MESSAGE, events.receive())
-            assertEquals(SUCCESSFUL_DISCONNECTION_MESSAGE, events.receive())
-            events.close()
-            Unit
+                assertFalse(consumer.subscriptions.contains(subscription1))
+                assertFalse(consumer.subscriptions.contains(subscription2))
+                assertEquals(SUCCESSFUL_DISCONNECTION_MESSAGE, events.receive())
+                assertEquals(SUCCESSFUL_DISCONNECTION_MESSAGE, events.receive())
+                events.close()
+            }
         }
     }
 
