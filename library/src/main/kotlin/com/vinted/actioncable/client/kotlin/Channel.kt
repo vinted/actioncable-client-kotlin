@@ -18,6 +18,6 @@ data class Channel(
         require(!params.containsKey("channel")) { "channel is a reserved key" }
 
         identifier = GsonBuilder().create()
-                .toJson(params.toMutableMap().apply { put("channel", channel) })
+                .toJson(params.toMutableMap().apply { put("channel", channel) }.toSortedMap())
     }
 }

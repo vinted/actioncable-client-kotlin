@@ -21,8 +21,13 @@ class Subscriptions constructor(private val consumer: Consumer) {
      * @param channel Channel to connect
      * @return Subscription instance
      */
-    fun create(channel: Channel): Subscription = Subscription(consumer, channel).also {
-        subscriptions.add(it)
+    fun create(channel: Channel): Subscription {
+        val subscription = Subscription(consumer, channel)
+
+        subscriptions.add(subscription)
+        sendSubscribeCommand(subscription)
+
+        return subscription
     }
 
     /**
@@ -32,11 +37,25 @@ class Subscriptions constructor(private val consumer: Consumer) {
      */
     fun remove(subscription: Subscription) {
         if (subscriptions.remove(subscription)) {
-            consumer.send(Command.unsubscribe(subscription.identifier))
+            sendUnsubscribeCommand(subscription)
+            subscription.onDisconnected?.invoke()
         }
     }
 
-    fun contains(subscription: Subscription) = subscriptions.contains(subscription)
+    /**
+     * Remove all subscriptions.
+     */
+    fun removeAll() {
+        ArrayList(subscriptions).forEach(::remove)
+    }
+
+    fun contains(subscription: Subscription): Boolean {
+        return subscriptions.contains(subscription)
+    }
+
+    fun contains(channel: Channel): Boolean {
+        return subscriptions.any { it.identifier == channel.identifier }
+    }
 
     fun reload() {
         subscriptions.forEach { sendSubscribeCommand(it) }
@@ -66,5 +85,9 @@ class Subscriptions constructor(private val consumer: Consumer) {
 
     private fun sendSubscribeCommand(subscription: Subscription) {
         consumer.send(Command.subscribe(subscription.identifier))
+    }
+
+    private fun sendUnsubscribeCommand(subscription: Subscription) {
+        consumer.send(Command.unsubscribe(subscription.identifier))
     }
 }
