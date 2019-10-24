@@ -7,7 +7,6 @@ import kotlinx.coroutines.channels.Channel
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import java.net.URI
 
 class SubscriptionsTest {
@@ -68,16 +67,6 @@ class SubscriptionsTest {
             assertEquals(SUCCESSFUL_CONNECTION_MESSAGE, events.receive())
             events.close()
             mockWebServer.shutdown()
-        }
-    }
-
-    @Test
-    fun cannotDuplicateExistingSubscription() {
-        assertThrows<IllegalArgumentException>("Such subscription already exists") {
-            val consumer = Consumer(URI("/"))
-
-            consumer.subscriptions.create(channel1)
-            consumer.subscriptions.create(channel1)
         }
     }
 

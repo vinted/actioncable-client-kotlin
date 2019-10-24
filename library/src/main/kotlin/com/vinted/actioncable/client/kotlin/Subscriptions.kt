@@ -22,8 +22,6 @@ class Subscriptions constructor(private val consumer: Consumer) {
      * @return Subscription instance
      */
     fun create(channel: Channel): Subscription {
-        require(channel.identifier !in subscriptions.map { it.identifier }) { "Such subscription already exists" }
-
         val subscription = Subscription(consumer, channel)
 
         subscriptions.add(subscription)
@@ -48,15 +46,16 @@ class Subscriptions constructor(private val consumer: Consumer) {
      * Remove all subscriptions.
      */
     fun removeAll() {
-        subscriptions.forEach { subscription ->
-            sendUnsubscribeCommand(subscription)
-            subscription.onDisconnected?.invoke()
-        }
-
-        subscriptions.clear()
+        subscriptions.toMutableList().forEach(::remove)
     }
 
-    fun contains(subscription: Subscription) = subscriptions.contains(subscription)
+    fun contains(subscription: Subscription): Boolean {
+        return subscriptions.contains(subscription)
+    }
+
+    fun contains(channel: Channel): Boolean {
+        return subscriptions.any { it.identifier == channel.identifier }
+    }
 
     fun reload() {
         subscriptions.forEach { sendSubscribeCommand(it) }
