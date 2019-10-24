@@ -46,7 +46,7 @@ class Subscriptions constructor(private val consumer: Consumer) {
      * Remove all subscriptions.
      */
     fun removeAll() {
-        subscriptions.toMutableList().forEach(::remove)
+        ArrayList(subscriptions).forEach(::remove)
     }
 
     fun contains(subscription: Subscription): Boolean {
