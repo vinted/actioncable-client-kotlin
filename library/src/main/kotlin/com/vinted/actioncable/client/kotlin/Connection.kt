@@ -66,21 +66,19 @@ class Connection constructor(
         eventsHandler.handle(::performOpen)
     }
 
+    fun terminate() {
+        eventsHandler.handle {
+            state = State.TERMINATING
+            performClose()
+        }
+    }
+
     private suspend fun performOpen() {
         if (isOpen()) {
             fireOnFailure(IllegalStateException("Must close existing connection before opening"))
         } else {
             doOpen()
         }
-    }
-
-    private fun close() {
-        eventsHandler.handle(::performClose)
-    }
-
-    fun terminate() {
-        state = State.TERMINATING
-        close()
     }
 
     private suspend fun performClose() {
@@ -104,7 +102,7 @@ class Connection constructor(
             open()
         } else {
             isReopening = true
-            close()
+            eventsHandler.handle(::performClose)
         }
     }
 
