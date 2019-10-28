@@ -20,7 +20,7 @@ Main changes compared to original version:
 ## Requirements
 
 * Kotlin 1.3 or later
-* [kotlinx.coroutines](https://github.com/Kotlin/kotlinx.coroutines) 1.2.1 or later
+* [kotlinx.coroutines](https://github.com/Kotlin/kotlinx.coroutines) 1.3.x or later
 * [Gson](https://github.com/google/gson) 2.x 
 * [okhttp](https://github.com/square/okhttp) 3.x
 
@@ -40,13 +40,13 @@ dependencies {
 ## Basic
 
 ```kotlin
-// 1. Setup
+// Setup
 val uri = URI("ws://cable.example.com")
-val consumer = ActionCable.createConsumer(uri)
+var consumer = ActionCable.createConsumer(uri)
 
-// 2. Create subscription
-val appearanceChannel = Channel("AppearanceChannel")
-val subscription = consumer.subscriptions.create(appearanceChannel)
+// Create subscription
+val fooChannel = Channel("FooChannel")
+val subscription = consumer.subscriptions.create(fooChannel)
 
 subscription.onConnected = {
     // Called when the subscription has been successfully completed
@@ -79,15 +79,24 @@ subscription.onFailed = { error ->
     // Called when the subscription encounters any error
 }
 
-// 3. Establish connection
+// Establish connection
 consumer.connect()
 
-// 4. Perform any action
+// Perform any action
 subscription.perform("away")
 
-// 5. Perform any action with params
+// Perform any action with params
 subscription.perform("hello", mapOf("name" to "world"))
+
+// Terminate connection
+consumer.disconnect()
+consumer = null
 ```
+
+Few notes:
+- You can create new channels and instantiate corresponding subscriptions after ```consumer.connect()``` call. 
+- It is allowed to have multiple subscriptions for the single channel. 
+- You can check if at least one subscription exists for the particular channel via: ```consumer.subscriptions.contains(channel)```
 
 ## Passing Parameters to Channel
 
@@ -98,7 +107,7 @@ val chatChannel = Channel("ChatChannel", mapOf("room_id" to 1))
 The parameter container is `Map<String, Any?>` and is converted to `JsonObject(Gson)` internally.
 To know what type of value can be passed, please read [Gson user guide](https://github.com/google/gson).
 
-## Passing Parameters to Subscription#perform
+## Sending Data via Subscription
 
 ```kotlin
 subscription.perform("send", mapOf(
