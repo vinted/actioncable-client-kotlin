@@ -33,7 +33,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.vinted:actioncable-client-kotlin:0.3.3'
+    implementation 'com.vinted:actioncable-client-kotlin:0.4.0'
 }
 ```
 
