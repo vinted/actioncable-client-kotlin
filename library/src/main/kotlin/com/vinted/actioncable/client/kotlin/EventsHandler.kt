@@ -30,8 +30,9 @@ class EventsHandler : CoroutineScope {
         }
     }
 
+    // TODO: actor.close() disabled due to possible ClosedSendChannelException. Issue should be fixed in the next version.
     fun stop() {
-        actor.close()
+        //   actor.close()
         coroutineContext.cancel()
     }
 }
