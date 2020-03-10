@@ -6,7 +6,6 @@ plugins {
 }
 
 group = "com.github.vinted"
-version = "0.4.2"
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
