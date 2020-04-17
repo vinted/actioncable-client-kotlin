@@ -17,6 +17,7 @@ data class Message(
         PING("ping"),
         CONFIRMATION("confirm_subscription"),
         REJECTION("reject_subscription"),
+        DISCONNECT("disconnect"),
         MESSAGE(null)
     }
 
