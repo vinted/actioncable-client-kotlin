@@ -47,6 +47,16 @@ class MessageTest {
     }
 
     @Test
+    fun createFromJsonStringForDisconnect() {
+        val jsonString = "{\"identifier\":\"{\\\"channel\\\":\\\"CommentsChannel\\\"}\",\"type\":\"disconnect\"}"
+        val message = Message.createFromJsonString(jsonString)
+
+        assertEquals(Message.Type.DISCONNECT, message.messageType)
+        assertEquals("{\"channel\":\"CommentsChannel\"}", message.identifier)
+        assertEquals(null, message.body)
+    }
+
+    @Test
     fun createFromJsonStringForMessage() {
         val jsonString = "{\"identifier\":\"{\\\"channel\\\":\\\"CommentsChannel\\\"}\",\"message\":{\"foo\":\"bar\"}}"
         val message = Message.createFromJsonString(jsonString)
