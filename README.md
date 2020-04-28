@@ -15,6 +15,10 @@ Main changes compared to original version:
 * Updated okhttp 2.x ---> okhttp 3.x
 * Changed serializer klaxon ---> gson
 
+### Contribution
+
+Pull requests are always welcome.
+
 # Usage
 
 ## Requirements
