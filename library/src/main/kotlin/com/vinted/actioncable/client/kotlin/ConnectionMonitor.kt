@@ -71,7 +71,7 @@ class ConnectionMonitor(
     private fun now(): Long = System.currentTimeMillis()
 
     private fun reconnectIfStale() {
-        if (connectionIsStale && reconnectAttempts < options.reconnectionMaxAttempts) {
+        if (connectionIsStale && (options.infinityReconnection || reconnectAttempts < options.reconnectionMaxAttempts)) {
             reconnectAttempts++
             if (!disconnectedRecently) {
                 connection.reopen()

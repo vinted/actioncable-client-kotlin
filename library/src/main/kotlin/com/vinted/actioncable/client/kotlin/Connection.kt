@@ -23,6 +23,7 @@ class Connection constructor(
      * @property query Query parameters to send on handshake.
      * @property headers HTTP Headers to send on handshake.
      * @property reconnection Whether to reconnect automatically. If reconnection is true, the client attempts to reconnect to the server when underlying connection is stale.
+     * @property infinityReconnection infinity attempts to reconnect.
      * @property reconnectionMaxAttempts The maximum number of attempts to reconnect.
      * @property reconnectionDelay First delay seconds of reconnection.
      * @property reconnectionDelayMax Max delay seconds of reconnection.
@@ -35,6 +36,7 @@ class Connection constructor(
             var query: Map<String, String>? = null,
             var headers: Map<String, String>? = null,
             var reconnection: Boolean = false,
+            var infinityReconnection: Boolean = false,
             var reconnectionMaxAttempts: Int = 30,
             var reconnectionDelay: Int = 3,
             var reconnectionDelayMax: Int = 30,
@@ -209,7 +211,7 @@ class Connection constructor(
 private fun Map<String, String>.toQueryString(): String {
     return this.keys.asSequence().mapNotNull { key ->
         this[key]?.let {
-            "$key=${URLEncoder.encode(this[key], Charsets.UTF_8.toString())}"
+            "$key=${URLEncoder.encode(this[key], "UTF-8")}"
         }
     }.joinToString("&")
 }
