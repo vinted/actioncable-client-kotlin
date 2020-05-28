@@ -7,13 +7,8 @@ Ruby [Action Cable](http://guides.rubyonrails.org/action_cable_overview.html) cl
 
 ## About Vinted's fork
 
-This is a fork of original library: https://github.com/hosopy/actioncable-client-kotlin
+This is a fork of fork library: https://github.com/vinted/actioncable-client-kotlin
 
-Main changes compared to original version:
-
-* Introduced stable version of Kotlin coroutines
-* Updated okhttp 2.x ---> okhttp 3.x
-* Changed serializer klaxon ---> gson
 
 ## Contribution
 
