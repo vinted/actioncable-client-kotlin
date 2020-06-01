@@ -51,9 +51,10 @@ class Consumer(
                     subscriptions.reload()
                 }
                 PING -> connectionMonitor.recordPing()
-                CONFIRMATION -> subscriptions.notifyConnected(parsedMessage.identifier!!)
-                REJECTION -> subscriptions.reject(parsedMessage.identifier!!)
-                MESSAGE -> subscriptions.notifyReceived(parsedMessage.identifier!!, parsedMessage.body)
+                CONFIRMATION -> if (parsedMessage.identifier != null)  subscriptions.notifyConnected(parsedMessage.identifier)
+                REJECTION -> if (parsedMessage.identifier != null)  subscriptions.reject(parsedMessage.identifier)
+                MESSAGE -> if (parsedMessage.identifier != null) subscriptions.notifyReceived(parsedMessage.identifier, parsedMessage.body)
+                DISCONNECT -> subscriptions.notifyDisconnected()
             }
         }
 
@@ -76,7 +77,7 @@ class Consumer(
             connectionMonitor.start()
         }
     }
-
+    
     /**
      * Disconnect the underlying connection.
      */
