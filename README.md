@@ -1,19 +1,14 @@
 # actioncable-client-kotlin
 
-[![Release](https://jitpack.io/v/vinted/actioncable-client-kotlin.svg)](https://jitpack.io/#vinted/actioncable-client-kotlin)
-[![Build Status](https://travis-ci.org/vinted/actioncable-client-kotlin.svg?branch=master)](https://travis-ci.org/vinted/actioncable-client-kotlin)
+[![Release](https://jitpack.io/v/AlexandrPuryshev/actioncable-client-kotlin.svg)](https://jitpack.io/#AlexandrPuryshev/actioncable-client-kotlin)
+[![Build Status](https://travis-ci.org/AlexandrPuryshev/actioncable-client-kotlin.svg?branch=master)](https://travis-ci.org/AlexandrPuryshev/actioncable-client-kotlin)
 
 Ruby [Action Cable](http://guides.rubyonrails.org/action_cable_overview.html) client library for Kotlin.
 
 ## About Vinted's fork
 
-This is a fork of original library: https://github.com/hosopy/actioncable-client-kotlin
+This is a fork of fork library: https://github.com/vinted/actioncable-client-kotlin
 
-Main changes compared to original version:
-
-* Introduced stable version of Kotlin coroutines
-* Updated okhttp 2.x ---> okhttp 3.x
-* Changed serializer klaxon ---> gson
 
 ## Contribution
 
@@ -37,7 +32,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.vinted:actioncable-client-kotlin:0.4.3'
+    implementation 'com.AlexandrPuryshev:actioncable-client-kotlin:0.4.4'
 }
 ```
 
