@@ -209,7 +209,7 @@ class Connection constructor(
 private fun Map<String, String>.toQueryString(): String {
     return this.keys.asSequence().mapNotNull { key ->
         this[key]?.let {
-            "$key=${URLEncoder.encode(this[key], Charsets.UTF_8.toString())}"
+            "$key=${URLEncoder.encode(this[key], "UTF-8")}"
         }
     }.joinToString("&")
 }
