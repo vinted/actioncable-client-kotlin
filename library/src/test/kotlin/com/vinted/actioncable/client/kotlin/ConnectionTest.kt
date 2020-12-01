@@ -33,7 +33,7 @@ class ConnectionTest {
                 mockWebServer.enqueue(mockResponse)
                 mockWebServer.start()
 
-                val connection = Connection(URI(mockWebServer.url("/").uri().toString()), Connection.Options())
+                val connection = Connection(URI(mockWebServer.url("/").toUri().toString()), Connection.Options())
                 connection.onOpen = {
                     launch {
                         events.send("onOpen")
@@ -63,7 +63,7 @@ class ConnectionTest {
                 mockWebServer.enqueue(mockResponse)
                 mockWebServer.start()
 
-                val connection = Connection(URI(mockWebServer.url("/").uri().toString()), Connection.Options())
+                val connection = Connection(URI(mockWebServer.url("/").toUri().toString()), Connection.Options())
                 connection.onMessage = { text ->
                     launch {
                         events.send("onMessage:$text")
@@ -89,7 +89,7 @@ class ConnectionTest {
         mockWebServer.enqueue(mockResponse)
         mockWebServer.start()
 
-        val connection = Connection(URI(mockWebServer.url("/").uri().toString()), Connection.Options())
+        val connection = Connection(URI(mockWebServer.url("/").toUri().toString()), Connection.Options())
         connection.onFailure = {
             launch {
                 events.send("onFailure")

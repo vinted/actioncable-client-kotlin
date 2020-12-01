@@ -40,7 +40,7 @@ class SubscriptionTest {
                 mockWebServer.start()
 
                 val channel = Channel("CommentsChannel")
-                val consumer = Consumer(URI(mockWebServer.url("/").uri().toString()))
+                val consumer = Consumer(URI(mockWebServer.url("/").toUri().toString()))
                 val subscription = consumer.subscriptions.create(channel)
                 subscription.onRejected = {
                     launch {
@@ -72,7 +72,7 @@ class SubscriptionTest {
                 mockWebServer.start()
 
                 val channel = Channel("CommentsChannel")
-                val consumer = Consumer(URI(mockWebServer.url("/").uri().toString()))
+                val consumer = Consumer(URI(mockWebServer.url("/").toUri().toString()))
                 val subscription = consumer.subscriptions.create(channel)
                 subscription.onConnected = {
                     subscription.perform("hello")
@@ -104,7 +104,7 @@ class SubscriptionTest {
                 mockWebServer.start()
 
                 val channel = Channel("CommentsChannel")
-                val consumer = Consumer(URI(mockWebServer.url("/").uri().toString()))
+                val consumer = Consumer(URI(mockWebServer.url("/").toUri().toString()))
                 val subscription = consumer.subscriptions.create(channel)
                 subscription.onFailed = {
                     launch {
@@ -130,7 +130,7 @@ class SubscriptionTest {
                 mockWebServer.start()
 
                 val channel = Channel("CommentsChannel")
-                val consumer = Consumer(URI(mockWebServer.url("/").uri().toString()))
+                val consumer = Consumer(URI(mockWebServer.url("/").toUri().toString()))
                 val subscription = consumer.subscriptions.create(channel)
                 subscription.onConnected = {
                     subscription.perform("hello")
@@ -154,7 +154,7 @@ class SubscriptionTest {
                 mockWebServer.start()
 
                 val channel = Channel("CommentsChannel")
-                val consumer = Consumer(URI(mockWebServer.url("/").uri().toString()))
+                val consumer = Consumer(URI(mockWebServer.url("/").toUri().toString()))
                 val subscription = consumer.subscriptions.create(channel)
                 subscription.onConnected = {
                     subscription.perform("hello", mapOf("foo" to "bar"))

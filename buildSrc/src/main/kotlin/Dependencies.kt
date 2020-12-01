@@ -1,13 +1,13 @@
 object Versions {
-    const val APP_COMPAT = "1.0.2"
-    const val KOTLIN = "1.3.50"
+    const val APP_COMPAT = "1.2.0"
+    const val KOTLIN = "1.4.20"
     const val COROUTINES = "1.3.2"
-    const val ANDROID_GRADLE_PLUGIN = "3.4.0"
+    const val ANDROID_GRADLE_PLUGIN = "4.1.1"
     const val JUNIT = "5.4.2"
     const val MOCKITO_KOTILN = "2.1.0"
     const val MOCKITO_INLINE = "3.0.0"
-    const val GSON = "2.8.4"
-    const val OKHTTP = "3.12.1"
+    const val GSON = "2.8.6"
+    const val OKHTTP = "4.9.0"
 
     const val COMPILE_SDK_VERSION = 28
     const val MIN_SDK_VERSION = 19

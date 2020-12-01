@@ -19,7 +19,7 @@ class SubscriptionsTest {
         withTimeout(TIMEOUT) {
             val events = Channel<String>()
             val mockWebServer = initializeMockServer(events)
-            val consumer = Consumer(URI(mockWebServer.url("/").uri().toString()))
+            val consumer = Consumer(URI(mockWebServer.url("/").toUri().toString()))
 
             val subscription1 = consumer.subscriptions.create(Channel("CommentsChannel"))
             val subscription2 = consumer.subscriptions.create(Channel("NotificationChannel"))
@@ -53,7 +53,7 @@ class SubscriptionsTest {
         withTimeout(TIMEOUT) {
             val events = Channel<String>()
             val mockWebServer = initializeMockServer(events)
-            val consumer = Consumer(URI(mockWebServer.url("/").uri().toString()))
+            val consumer = Consumer(URI(mockWebServer.url("/").toUri().toString()))
 
             consumer.connect()
             delay(SERVER_RESPONSE_DELAY)

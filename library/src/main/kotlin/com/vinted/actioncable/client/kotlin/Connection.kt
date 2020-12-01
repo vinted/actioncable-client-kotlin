@@ -7,6 +7,7 @@ import java.net.URI
 import java.net.URLEncoder
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLContext
+import javax.net.ssl.X509TrustManager
 
 typealias OkHttpClientFactory = () -> OkHttpClient
 
@@ -30,6 +31,7 @@ class Connection constructor(
      */
     data class Options(
             var sslContext: SSLContext? = null,
+            var trustManager: X509TrustManager? = null,
             var hostnameVerifier: HostnameVerifier? = null,
             var cookieHandler: CookieHandler? = null,
             var query: Map<String, String>? = null,
@@ -124,7 +126,10 @@ class Connection constructor(
         val httpClientBuilder = (options.okHttpClientFactory?.invoke()
                 ?: OkHttpClient()).newBuilder()
 
-        options.sslContext?.let { httpClientBuilder.sslSocketFactory(it.socketFactory) }
+        if (options.sslContext != null && options.trustManager != null) {
+            httpClientBuilder.sslSocketFactory(options.sslContext!!.socketFactory , options.trustManager!!)
+        }
+
         options.hostnameVerifier?.let { httpClientBuilder.hostnameVerifier(it) }
 
         val urlBuilder = StringBuilder(uri.toString())
@@ -141,7 +146,7 @@ class Connection constructor(
 
         httpClient.newWebSocket(request, webSocketListener)
 
-        httpClient.dispatcher().executorService().shutdown()
+        httpClient.dispatcher.executorService.shutdown()
     }
 
     private suspend fun doSend(data: Any) {

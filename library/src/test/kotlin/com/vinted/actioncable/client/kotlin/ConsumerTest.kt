@@ -51,7 +51,7 @@ class ConsumerTest {
                 mockWebServer.enqueue(mockResponse)
                 mockWebServer.start()
 
-                val consumer = ActionCable.createConsumer(URI(mockWebServer.url("/").uri().toString()))
+                val consumer = ActionCable.createConsumer(URI(mockWebServer.url("/").toUri().toString()))
                 consumer.connect()
 
                 assertEquals("onOpen", events.receive())
@@ -84,7 +84,7 @@ class ConsumerTest {
                 mockWebServer.enqueue(mockResponse)
                 mockWebServer.start()
 
-                val consumer = ActionCable.createConsumer(URI(mockWebServer.url("/").uri().toString()))
+                val consumer = ActionCable.createConsumer(URI(mockWebServer.url("/").toUri().toString()))
                 consumer.connect()
 
                 assertEquals("onOpen", events.receive())
