@@ -27,6 +27,7 @@ class Connection constructor(
      * @property reconnectionDelay First delay seconds of reconnection.
      * @property reconnectionDelayMax Max delay seconds of reconnection.
      * @property okHttpClientFactory To use your own OkHttpClient, set this option.
+     * @property okHttpWebSocketFactory To use your own WebSocket.Factory, set this option.
      */
     data class Options(
             var sslContext: SSLContext? = null,
@@ -38,7 +39,8 @@ class Connection constructor(
             var reconnectionMaxAttempts: Int = 30,
             var reconnectionDelay: Int = 3,
             var reconnectionDelayMax: Int = 30,
-            var okHttpClientFactory: OkHttpClientFactory? = null
+            var okHttpClientFactory: OkHttpClientFactory? = null,
+            var okHttpWebSocketFactory: WebSocket.Factory? = null
     )
 
     private enum class State {
@@ -138,8 +140,9 @@ class Connection constructor(
         val request = requestBuilder.build()
 
         val httpClient = httpClientBuilder.build()
+        val webSocketFactory = options.okHttpWebSocketFactory ?: httpClient
 
-        httpClient.newWebSocket(request, webSocketListener)
+        webSocketFactory.newWebSocket(request, webSocketListener)
 
         httpClient.dispatcher().executorService().shutdown()
     }
