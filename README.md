@@ -142,17 +142,17 @@ val consumer = ActionCable.createConsumer(uri, options)
 Below is a list of available options.
 
 * sslContext
-    
+
     ```kotlin
     options.connection.sslContext = yourSSLContextInstance
     ```
-    
+
 * hostnameVerifier
-    
+
     ```kotlin
     options.connection.hostnameVerifier = yourHostnameVerifier
     ```
-    
+
 * query
     
     ```kotlin
@@ -181,16 +181,17 @@ Below is a list of available options.
     options.connection.reconnectionMaxAttempts = 30
     ```
 
-* okHttpClientFactory
-    * Factory instance to create your own OkHttpClient.
-    * If `okHttpClientFactory` is not set, just create OkHttpClient by `OkHttpClient()`.
-    
+* webSocketFactory
+    * Pass your own instance of OkHttp `WebSocket.Factory`
+    * Note: if you provide a custom `WebSocket.Factory` implementation, then `sslContext` and `hostnameVerifier` options are ignored. You must set those options directly in your custom implementation instead of setting it on `options.connection`. 
+
     ```kotlin
-    options.connection.okHttpClientFactory = {
-        OkHttpClient().also {
-            it.networkInterceptors().add(StethoInterceptor())
-        }
-    }
+    options.connection.webSocketFactory = OkHttpClient.Builder().apply {
+        // Configure your OkHttpClient how you like
+        networkInterceptors().add(StethoInterceptor())
+        sslSocketFactory(yourSocketFactory)
+        hostnameVerifier(yourHostnameVerifier)
+    }.build()
     ```
 
 ## Authentication

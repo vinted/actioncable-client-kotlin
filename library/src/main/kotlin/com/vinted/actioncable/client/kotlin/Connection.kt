@@ -8,8 +8,6 @@ import java.net.URLEncoder
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLContext
 
-typealias OkHttpClientFactory = () -> OkHttpClient
-
 class Connection constructor(
         private val uri: URI,
         private val options: Options
@@ -26,8 +24,7 @@ class Connection constructor(
      * @property reconnectionMaxAttempts The maximum number of attempts to reconnect.
      * @property reconnectionDelay First delay seconds of reconnection.
      * @property reconnectionDelayMax Max delay seconds of reconnection.
-     * @property okHttpClientFactory To use your own OkHttpClient, set this option.
-     * @property okHttpWebSocketFactory To use your own WebSocket.Factory, set this option.
+     * @property webSocketFactory To use your own OkHttp WebSocket.Factory, set this option.
      */
     data class Options(
             var sslContext: SSLContext? = null,
@@ -39,8 +36,7 @@ class Connection constructor(
             var reconnectionMaxAttempts: Int = 30,
             var reconnectionDelay: Int = 3,
             var reconnectionDelayMax: Int = 30,
-            var okHttpClientFactory: OkHttpClientFactory? = null,
-            var okHttpWebSocketFactory: WebSocket.Factory? = null
+            var webSocketFactory: WebSocket.Factory? = null
     )
 
     private enum class State {
@@ -123,12 +119,6 @@ class Connection constructor(
     private fun doOpen() {
         state = State.CONNECTING
 
-        val httpClientBuilder = (options.okHttpClientFactory?.invoke()
-                ?: OkHttpClient()).newBuilder()
-
-        options.sslContext?.let { httpClientBuilder.sslSocketFactory(it.socketFactory) }
-        options.hostnameVerifier?.let { httpClientBuilder.hostnameVerifier(it) }
-
         val urlBuilder = StringBuilder(uri.toString())
 
         options.query?.let { urlBuilder.append("?${it.toQueryString()}") }
@@ -139,12 +129,12 @@ class Connection constructor(
 
         val request = requestBuilder.build()
 
-        val httpClient = httpClientBuilder.build()
-        val webSocketFactory = options.okHttpWebSocketFactory ?: httpClient
+        val webSocketFactory = options.webSocketFactory ?: OkHttpClient.Builder().apply {
+            options.sslContext?.let { sslSocketFactory(it.socketFactory) }
+            options.hostnameVerifier?.let { hostnameVerifier(it) }
+        }.build()
 
         webSocketFactory.newWebSocket(request, webSocketListener)
-
-        httpClient.dispatcher().executorService().shutdown()
     }
 
     private suspend fun doSend(data: Any) {
