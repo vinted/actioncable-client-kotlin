@@ -9,9 +9,9 @@ object Versions {
     const val GSON = "2.8.4"
     const val OKHTTP = "3.12.1"
 
-    const val COMPILE_SDK_VERSION = 28
+    const val COMPILE_SDK_VERSION = 30
     const val MIN_SDK_VERSION = 19
-    const val TARGET_SDK_VERSION = 28
+    const val TARGET_SDK_VERSION = 30
 
     private const val MAJOR = 0
     private const val MINOR = 4
