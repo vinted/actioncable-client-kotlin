@@ -1,13 +1,11 @@
 package com.vinted.actioncable.client.kotlin
 
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.never
-import com.nhaarman.mockitokotlin2.times
-import com.nhaarman.mockitokotlin2.verify
 import com.vinted.actioncable.client.kotlin.ConnectionMonitor.Companion.STALE_THRESHOLD
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
+import org.mockito.Mockito.*
+import org.mockito.kotlin.mock
 
 class ConnectionMonitorTest {
 
