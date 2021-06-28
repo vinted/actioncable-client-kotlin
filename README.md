@@ -1,7 +1,7 @@
 # actioncable-client-kotlin
 
 [![Release](https://jitpack.io/v/vinted/actioncable-client-kotlin.svg)](https://jitpack.io/#vinted/actioncable-client-kotlin)
-[![Build Status](https://travis-ci.org/vinted/actioncable-client-kotlin.svg?branch=master)](https://travis-ci.org/vinted/actioncable-client-kotlin)
+[![Build Status](https://travis-ci.com/vinted/actioncable-client-kotlin.svg?branch=master)](https://travis-ci.com/vinted/actioncable-client-kotlin)
 
 Ruby [Action Cable](http://guides.rubyonrails.org/action_cable_overview.html) client library for Kotlin.
 
