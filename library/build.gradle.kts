@@ -1,3 +1,4 @@
+import Versions.VERSION_NAME
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -16,6 +17,17 @@ tasks.test {
         excludeTags("slow")
         includeEngines("junit-jupiter")
         failFast = true
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "$group"
+            artifactId = "actioncable-client-kotlin"
+            version = VERSION_NAME
+            from(components["java"])
+        }
     }
 }
 
