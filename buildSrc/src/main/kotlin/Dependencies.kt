@@ -15,7 +15,7 @@ object Versions {
 
     private const val MAJOR = 0
     private const val MINOR = 5
-    private const val PATCH = 1
+    private const val PATCH = 2
 
     const val VERSION_CODE: Int = (MAJOR * 10000) + (MINOR * 100) + PATCH
     const val VERSION_NAME: String = "$MAJOR.$MINOR.$PATCH"
