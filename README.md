@@ -32,7 +32,7 @@ Pull requests are always welcome.
 
 ```groovy
 repositories {
-    jcenter()
+    mavenCentral()
     maven { url "https://jitpack.io" }
 }
 
